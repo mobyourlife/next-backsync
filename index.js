@@ -1,3 +1,5 @@
+import { loop } from './commons'
+
 import {
   connectToFacebookDatabase,
   facebookCheckPages
@@ -6,16 +8,8 @@ import {
 function main() {
   let db
   connectToFacebookDatabase((db, done) => {
-    loop(db).then(() => done())
+    loop(facebookCheckPages, 5000, db)
   })
-}
-
-function loop(db) {
-  const checkPages = facebookCheckPages(db).then(console.log)
-
-  return Promise.all([
-    checkPages
-  ])
 }
 
 main()

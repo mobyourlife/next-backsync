@@ -6,6 +6,7 @@ export function facebookCheckPages(db) {
         if (err) {
           reject('Unable to check pages from database!', err)
         } else {
+          console.log(docs)
           resolve(docs)
         }
       })
