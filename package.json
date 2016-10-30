@@ -1,0 +1,12 @@
+{
+  "name": "mob-backsync",
+  "version": "4.0.0",
+  "description": "Microservices de sincronização com os provedores de dados.",
+  "main": "index.js",
+  "repository": {
+    "url": "git@bitbucket.org:mobyourlife/backsync",
+    "type": "git"
+  },
+  "author": "Filipe Oliveira <contato@fmoliveira.com.br>",
+  "license": "Apache-2.0"
+}
