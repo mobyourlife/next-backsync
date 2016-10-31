@@ -9,9 +9,8 @@ function main() {
   Promise.all([
     connectToFacebookDatabase()
   ]).then(data => {
-    let db
-    [db] = data
-
+    let [db] = data
+    
     loop(() => facebookCheckPages(db), 5000)
   })
 }
