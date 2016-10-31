@@ -8,7 +8,9 @@ import {
 function main() {
   let db
   connectToFacebookDatabase((db, done) => {
-    loop(facebookCheckPages, 5000, db)
+    loop(() => {
+      return facebookCheckPages(db)
+    }, 5000)
   })
 }
 

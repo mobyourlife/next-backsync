@@ -1,6 +1,6 @@
-export function loop(promise, interval, args) {
+export function loop(promise, interval) {
   const repeat = () => {
-    return promise(args).then(() => {
+    return promise().then(() => {
       setTimeout(repeat, interval)
     })
   }
