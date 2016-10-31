@@ -6,11 +6,13 @@ import {
 } from './facebook'
 
 function main() {
-  let db
-  connectToFacebookDatabase((db, done) => {
-    loop(() => {
-      return facebookCheckPages(db)
-    }, 5000)
+  Promise.all([
+    connectToFacebookDatabase()
+  ]).then(data => {
+    let db
+    [db] = data
+
+    loop(() => facebookCheckPages(db), 5000)
   })
 }
 
