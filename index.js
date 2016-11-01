@@ -1,9 +1,8 @@
-import { loop } from './commons'
-
 import {
   connectToFacebookDatabase,
-  facebookCheckPages
-} from './facebook'
+  facebookCheckPages,
+  loop
+} from './lib'
 
 function main() {
   Promise.all([
