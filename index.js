@@ -13,7 +13,7 @@ function main() {
     
     loop(() =>
       facebookCheckPages(db).then(pages => prepareBatchItems(db, pages))
-    , 60)
+    , 5)
   })
 }
 
