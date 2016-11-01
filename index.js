@@ -1,7 +1,8 @@
 import {
   connectToFacebookDatabase,
   facebookCheckPages,
-  loop
+  loop,
+  prepareBatchItems
 } from './lib'
 
 function main() {
@@ -10,7 +11,9 @@ function main() {
   ]).then(data => {
     let [db] = data
     
-    loop(() => facebookCheckPages(db), 5000)
+    loop(() =>
+      facebookCheckPages(db).then(pages => prepareBatchItems(db, pages))
+    , 60)
   })
 }
 
