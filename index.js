@@ -1,5 +1,6 @@
 import {
   connectToFacebookDatabase,
+  connectToMessageQueue,
   facebookCheckPages,
   loop,
   prepareBatchItems,
@@ -8,12 +9,13 @@ import {
 
 function main() {
   Promise.all([
-    connectToFacebookDatabase()
+    connectToFacebookDatabase(),
+    connectToMessageQueue()
   ]).then(data => {
-    let [db] = data
+    let [db, ch] = data
     
     loop(() => facebookCheckPages(db).then(pages => prepareBatchItems(db, pages)), 5)
-    loop(() => prepareBatchLots(db), 1)
+    loop(() => prepareBatchLots(db, ch), 1)
   })
 }
 
