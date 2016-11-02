@@ -2,6 +2,7 @@ import {
   connectToFacebookDatabase,
   connectToMessageQueue,
   consumeQueue,
+  produceQueue,
   facebookCheckPages,
   fetchBatchRequests,
   loop,
@@ -10,6 +11,8 @@ import {
 } from './lib'
 
 function main() {
+  const BATCH_LOTS_QUEUE = 'batch_lots'
+
   Promise.all([
     connectToFacebookDatabase(),
     connectToMessageQueue()
@@ -17,9 +20,9 @@ function main() {
     let [db, ch] = data
     
     loop(() => facebookCheckPages(db).then(pages => prepareBatchItems(db, pages)), 5)
-    loop(() => prepareBatchLots(db, ch), 1)
+    loop(() => prepareBatchLots(db).then(lot => produceQueue(ch, BATCH_LOTS_QUEUE, lot)), 1)
 
-    consumeQueue(ch, 'batch_lots', fetchBatchRequests)
+    consumeQueue(ch, BATCH_LOTS_QUEUE, fetchBatchRequests)
   })
 }
 
