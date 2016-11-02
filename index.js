@@ -20,7 +20,7 @@ function main() {
     let [db, ch] = data
     
     loop(() => facebookCheckPages(db).then(pages => prepareBatchItems(db, pages)), 5)
-    loop(() => prepareBatchLots(db).then(lot => produceQueue(ch, BATCH_LOTS_QUEUE, lot)), 1)
+    loop(() => prepareBatchLots(db).then(lot => produceQueue(ch, BATCH_LOTS_QUEUE, lot)), 5)
 
     consumeQueue(ch, BATCH_LOTS_QUEUE, fetchBatchRequests)
   })
