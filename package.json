@@ -2,9 +2,9 @@
   "name": "mob-backsync",
   "version": "4.0.0",
   "description": "Microservices de sincronização com os provedores de dados.",
-  "main": "index.js",
+  "main": "src/main.js",
   "scripts": {
-    "start": "babel-node index.js"
+    "start": "babel-watch src/main.js"
   },
   "repository": {
     "url": "git@bitbucket.org:mobyourlife/backsync",
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
-    "babel-preset-es2015": "^6.18.0"
+    "babel-preset-es2015": "^6.18.0",
+    "babel-watch": "^2.0.3"
   }
 }
