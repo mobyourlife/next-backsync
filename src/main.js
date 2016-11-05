@@ -1,6 +1,6 @@
 import { facebookCheckPages, loop, prepareBatchItems, prepareBatchLots } from './lib'
-import { connectToFacebookDatabase } from './providers/database'
-import { connectToMessageQueue, consumeQueue, produceQueue } from './providers/mq'
+import { connectToFacebookDatabase } from './database'
+import { connectToMessageQueue, consumeQueue, produceQueue } from './mq'
 
 function main() {
   const BATCH_LOTS_QUEUE = 'batch_lots'
