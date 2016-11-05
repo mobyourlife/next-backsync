@@ -1,4 +1,4 @@
-import { facebookCheckPages, loop, prepareBatchItems, prepareBatchLots } from './lib'
+import { facebookCheckPages, loop, prepareBatchItems, prepareBatchLots } from './backsync'
 import { connectToFacebookDatabase } from './database'
 import { connectToMessageQueue, consumeQueue, produceQueue } from './mq'
 
