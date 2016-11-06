@@ -29,7 +29,7 @@ export function batchRequest(batch_items) {
     })
     .then(res => res.json())
     .then(json => {
-      if (json && json.status && json.status >= 200 && json.status < 300) {
+      if (Array.isArray(json)) {
         resolve(json)
       } else {
         reject(json)
