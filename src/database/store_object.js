@@ -8,6 +8,7 @@ export function storeObject(db, data) {
 }
 
 function store(db, i) {
+  const col = i.code >= 200 && i.code < 300 ? 'objects' : 'errors'
   i.body = JSON.parse(i.body)
-  return db.collection('objects').insert(i)
+  return db.collection(col).insert(i)
 }
