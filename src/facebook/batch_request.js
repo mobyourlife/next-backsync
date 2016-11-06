@@ -9,8 +9,18 @@ export function batchRequest(batch_items) {
   return new Promise((resolve, reject) => {
     const data = batch_items.map(mapBatchItems)
 
-    const form = new FormData()
-    form = addAccesstoken(form)
+    let form = new FormData()
+
+    if (FACEBOOK_ACCESS_TOKEN) {
+      form.append('access_token', FACEBOOK_ACCESS_TOKEN)
+    } else if (FACEBOOK_APP_ID && FACEBOOK_APP_SECRET) {
+      form.append('key', FACEBOOK_APP_ID)
+      form.append('access_token', FACEBOOK_APP_SECRET)
+    } else {
+      reject('Access token not specified!')
+      return
+    }
+    
     form.append('batch', JSON.stringify(data))
 
     fetch('https://graph.facebook.com', {
@@ -27,15 +37,4 @@ function mapBatchItems(i) {
     method: i.method,
     relative_url: i.relative_url
   }
-}
-
-function addAccesstoken(form) {
-  if (FACEBOOK_ACCESS_TOKEN) {
-    form.append('access_token', FACEBOOK_ACCESS_TOKEN)
-  } else {
-    form.append('key', FACEBOOK_APP_ID)
-    form.append('access_token', FACEBOOK_APP_SECRET)
-  }
-
-  return form
 }
