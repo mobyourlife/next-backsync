@@ -28,7 +28,15 @@ export function batchRequest(batch_items) {
       body: form
     })
     .then(res => res.json())
-    .then(resolve, reject)
+    .then(json => {
+      if (json && json.status && json.status >= 200 && json.status < 300) {
+        resolve(json)
+      } else {
+        reject(json)
+      }
+    }, err => {
+      reject(err)
+    })
   })
 }
 
