@@ -16,14 +16,15 @@ function main() {
     loop(() => facebookCheckPages(db).then(pages => prepareBatchItems(db, pages)), 5)
     loop(() => prepareBatchLots(db).then(lot => produceQueue(ch, BATCH_LOTS_QUEUE, lot)), 5)
 
-    consumeQueue(ch, BATCH_LOTS_QUEUE).subscribe(data => {
+    consumeQueue(ch, BATCH_LOTS_QUEUE).subscribe(res => {
+      const { data, ack } = res
       console.log('Consumed', data.length, 'items from the observable')
       batchRequest(data).then(res => {
         const promises = res.map(i => produceQueue(ch, STORE_OBJECT_QUEUE, i))
-        return Promise.all(promises)
+        return Promise.all(promises).then(ack)
       }, err => {
         console.error(err)
-        return produceQueue(ch, BATCH_ERRORS_QUEUE, err)
+        return produceQueue(ch, BATCH_ERRORS_QUEUE, err).then(ack)
       })
     }, err => {
       console.error(err)
