@@ -8,12 +8,18 @@ export function facebookCheckPages(db) {
           { 'log.check_page': null },
           { 'log.check_page': {$lt: new Date(new Date().getTime() - 5 * 60 * 1000)} }
         ]
-      }).toArray((err, docs) => {
+      }, { fb_account_id: 1 }).toArray((err, docs) => {
         if (err) {
           reject('Unable to check pages from database!' + err)
         } else {
           resolve({
-            inpages: docs,
+            endpoints: docs.map(i => {
+              return {
+                _id: i._id,
+                url: i.fb_account_id
+              }
+            }),
+            datefield: 'log.check_page',
             fields: [
               'id',
               'about',

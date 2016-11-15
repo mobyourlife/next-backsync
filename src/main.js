@@ -1,4 +1,4 @@
-import { facebookCheckPages, loop, prepareBatchItems, prepareBatchLots } from './backsync'
+import { facebookCheckPages, facebookCheckAlbums, loop, prepareBatchItems, prepareBatchLots } from './backsync'
 import { connectToFacebookDatabase, storeError, storeObject, STORE_OBJECT_QUEUE } from './database'
 import { batchRequest } from './facebook'
 import { connectToMessageQueue, consumeQueue, produceQueue } from './mq'
@@ -14,6 +14,8 @@ function main() {
     let [db, ch] = data
     
     loop(() => facebookCheckPages(db).then(pages => prepareBatchItems(db, pages)), 5)
+    loop(() => facebookCheckAlbums(db).then(pages => prepareBatchItems(db, pages)), 5)
+
     loop(() => prepareBatchLots(db).then(lot => produceQueue(ch, BATCH_LOTS_QUEUE, lot)), 5)
 
     consumeQueue(ch, BATCH_LOTS_QUEUE).subscribe(res => {
