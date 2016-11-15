@@ -23,7 +23,7 @@ export function batchRequest(batch_items) {
     
     form.append('batch', JSON.stringify(data))
 
-    fetch('https://graph.facebook.com', {
+    fetch('https://graph.facebook.com/v2.8?locale=pt_BR', {
       method: 'POST',
       body: form
     })

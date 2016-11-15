@@ -1,5 +1,7 @@
-export function prepareBatchItems(db, inpages) {
+export function prepareBatchItems(db, res) {
   return new Promise((resolve, reject) => {
+    const { inpages, fields } = res
+
     if (!inpages || inpages.length === 0) {
       resolve()
       return
@@ -10,7 +12,7 @@ export function prepareBatchItems(db, inpages) {
       const items = inpages.map(i => {
         return {
           method: 'GET',
-          relative_url: `${i.fb_account_id}`
+          relative_url: `${i.fb_account_id}?fields=${fields}`
         }
       })
       batch_items.insertMany(items, (err, result) => {
