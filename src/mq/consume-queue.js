@@ -7,7 +7,7 @@ export function consumeQueue(ch, queue_name) {
     ch.consume(queue_name, msg => {
       try {
         const data = JSON.parse(msg.content.toString())
-        console.log('Consuming', data.length, ' items from the queue')
+        console.log('Consuming', Array.isArray(data) ? data.length : 1, 'items from the queue')
         observer.next({
           data: data,
           ack: () => ch.ack(msg)

@@ -30,6 +30,12 @@ function main() {
       console.error(err)
       produceQueue(ch, BATCH_ERRORS_QUEUE, err)
     })
+
+    consumeQueue(ch, STORE_OBJECT_QUEUE).subscribe(res => {
+      const { data, ack } = res
+      console.log('Received response')
+      return storeObject(db, data).then(ack)
+    })
   })
 }
 
