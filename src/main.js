@@ -1,10 +1,11 @@
 import { facebookCheckPages, loop, prepareBatchItems, prepareBatchLots } from './backsync'
-import { connectToFacebookDatabase, storeError, storeObject } from './database'
+import { connectToFacebookDatabase, storeError, storeObject, STORE_OBJECT_QUEUE } from './database'
 import { batchRequest } from './facebook'
 import { connectToMessageQueue, consumeQueue, produceQueue } from './mq'
 
 function main() {
   const BATCH_LOTS_QUEUE = 'batch_lots'
+  const BATCH_ERRORS_QUEUE = 'batch_errors'
 
   Promise.all([
     connectToFacebookDatabase(),
@@ -18,13 +19,15 @@ function main() {
     consumeQueue(ch, BATCH_LOTS_QUEUE).subscribe(data => {
       console.log('Consumed', data.length, 'items from the observable')
       batchRequest(data).then(res => {
-        storeObject(db, res)
+        const promises = res.map(i => produceQueue(ch, STORE_OBJECT_QUEUE, i))
+        return Promise.all(promises)
       }, err => {
         console.error(err)
-        storeError(db, err)
+        return produceQueue(ch, BATCH_ERRORS_QUEUE, err)
       })
     }, err => {
       console.error(err)
+      produceQueue(ch, BATCH_ERRORS_QUEUE, err)
     })
   })
 }

@@ -3,6 +3,7 @@ export function facebookCheckPages(db) {
     try {
       const pages = db.collection('pages')
       pages.find({
+        active: true,
         $or: [
           { 'log.check_page': null },
           { 'log.check_page': {$lt: new Date(new Date().getTime() - 1 * 60 * 1000)} }
