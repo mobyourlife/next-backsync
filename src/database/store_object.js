@@ -74,7 +74,7 @@ function updatePage(db, i) {
 
 function insertAlbums(db, req, body) {
   let promises = body.data.map(i => upsertAlbum(db, req.fb_account_id, i))
-  return promises
+  return Promise.all(promises)
 }
 
 function upsertAlbum(db, fb_account_id, i) {
