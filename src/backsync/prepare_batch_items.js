@@ -11,6 +11,7 @@ export function prepareBatchItems(db, res) {
       const batch_items = db.collection('batch_items')
       const items = endpoints.map(i => {
         return {
+          fb_request_type: i.fb_request_type,
           fb_account_id: i.fb_account_id,
           method: 'GET',
           relative_url: `${i.url}?fields=${fields}`

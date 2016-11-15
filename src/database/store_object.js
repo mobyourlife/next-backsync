@@ -28,10 +28,15 @@ function parseObject(db, req, i) {
   }
 
   if (i.code >= 200 && i.code < 300) {
-    if (i.body && i.body.category) {
-      return updatePage(db, i.body)
-    } else {
-      return db.collection(STORE_OBJECT_QUEUE).insert(i)
+    switch (req.fb_request_type) {
+      case 'page':
+        return updatePage(db, i.body)
+      
+      case 'album':
+        return insertAlbums(db, req, i.body)
+      
+      default:
+        return db.collection(STORE_OBJECT_QUEUE).insert(i)
     }
   } else {
     return db.collection(STORE_ERROR_QUEUE).insert(i)
@@ -39,7 +44,9 @@ function parseObject(db, req, i) {
 }
 
 function updatePage(db, i) {
-  return db.collection('pages').update({ fb_account_id: i.id }, {
+  return db.collection('pages').update({
+    fb_account_id: i._id
+  }, {
     $set: {
       about: i.about,
       category: i.category,
@@ -62,5 +69,23 @@ function updatePage(db, i) {
       voip_info: i.voip_info,
       were_here_count: i.were_here_count
     }
+  })
+}
+
+function insertAlbums(db, req, body) {
+  let promises = body.data.map(i => upsertAlbum(db, req.fb_account_id, i))
+  return promises
+}
+
+function upsertAlbum(db, fb_account_id, i) {
+  return db.collection('albums').update({
+    fb_account_id,
+    fb_album_id: i.id
+  }, {
+    fb_account_id,
+    fb_album_id: i.id,
+    name: i.name
+  }, {
+    upsert: true
   })
 }

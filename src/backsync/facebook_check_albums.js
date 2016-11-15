@@ -17,6 +17,7 @@ export function facebookCheckAlbums(db) {
             endpoints: docs.map(i => {
               return {
                 _id: i._id,
+                fb_request_type: 'album',
                 fb_account_id: i.fb_account_id,
                 url: i.fb_account_id + '/albums'
               }
