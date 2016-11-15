@@ -30,7 +30,14 @@ export function batchRequest(batch_items) {
     .then(res => res.json())
     .then(json => {
       if (Array.isArray(json)) {
-        resolve(json)
+        let res = []
+        for (let i = 0; i < json.length; i++) {
+          res.push({
+            request: batch_items[i],
+            response: json[i]
+          })
+        }
+        resolve(res)
       } else {
         reject(json)
       }

@@ -1,3 +1,5 @@
+const ObjectID = require('mongodb').ObjectID
+
 export const STORE_OBJECT_QUEUE = 'store_object'
 export const STORE_ERROR_QUEUE = 'store_error'
 
@@ -10,7 +12,17 @@ export function storeObject(db, data) {
   }
 }
 
-function store(db, i) {
+function store(db, data) {
+  const { request, response } = data
+
+  let promises = []
+  promises.push(db.collection('batch_items').remove({ _id: new ObjectID(request._id) }))
+  promises.push(parseObject(db, response))
+
+  return Promise.all(promises)
+}
+
+function parseObject(db, i) {
   if (i.body && typeof i.body === 'string') {
     i.body = JSON.parse(i.body)
   }
