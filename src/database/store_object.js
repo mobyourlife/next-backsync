@@ -35,6 +35,9 @@ function parseObject(db, req, i) {
       case 'album':
         return insertAlbums(db, req, i.body)
       
+      case 'photo':
+        return insertPhotos(db, req, i.body)
+      
       default:
         return db.collection(STORE_OBJECT_QUEUE).insert(i)
     }
@@ -85,6 +88,34 @@ function upsertAlbum(db, fb_account_id, i) {
     fb_account_id,
     fb_album_id: i.id,
     name: i.name
+  }, {
+    upsert: true
+  })
+}
+
+function insertPhotos(db, req, body) {
+  let promises = body.data.map(i => upsertPhoto(db, req.fb_account_id, req.fb_album_id, i))
+  return Promise.all(promises)
+}
+
+function upsertPhoto(db, fb_account_id, fb_album_id, i) {
+  return db.collection('photos').update({
+    fb_account_id,
+    fb_album_id,
+    fb_photo_id: i.id
+  }, {
+    fb_account_id,
+    fb_album_id,
+    fb_photo_id: i.id,
+    backdated_time: i.backdated_time,
+    created_time: i.created_time,
+    height: i.height,
+    images: i.images,
+    link: i.link,
+    name: i.name,
+    place: i.place,
+    updated_time: i.updated_time,
+    width: i.width
   }, {
     upsert: true
   })

@@ -21,7 +21,10 @@ export function facebookCheckPages(db) {
                 url: i.fb_account_id
               }
             }),
-            datefield: 'log.check_page',
+            set_date: {
+              collection: 'pages',
+              property: 'log.check_page'
+            },
             fields: [
               'id',
               'about',

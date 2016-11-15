@@ -22,7 +22,10 @@ export function facebookCheckAlbums(db) {
                 url: i.fb_account_id + '/albums'
               }
             }),
-            datefield: 'log.check_albums',
+            set_date: {
+              collection: 'pages',
+              property: 'log.check_albums'
+            },
             fields: [
               'location',
               'message',
