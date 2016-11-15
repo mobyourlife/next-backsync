@@ -17,12 +17,12 @@ function store(db, data) {
 
   let promises = []
   promises.push(db.collection('batch_items').remove({ _id: new ObjectID(request._id) }))
-  promises.push(parseObject(db, response))
+  promises.push(parseObject(db, request, response))
 
   return Promise.all(promises)
 }
 
-function parseObject(db, i) {
+function parseObject(db, req, i) {
   if (i.body && typeof i.body === 'string') {
     i.body = JSON.parse(i.body)
   }

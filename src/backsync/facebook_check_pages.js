@@ -16,6 +16,7 @@ export function facebookCheckPages(db) {
             endpoints: docs.map(i => {
               return {
                 _id: i._id,
+                fb_account_id: i.fb_account_id,
                 url: i.fb_account_id
               }
             }),
