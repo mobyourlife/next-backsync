@@ -14,6 +14,7 @@ export function consumeQueue(ch, queue_name) {
         })
       } catch (err) {
         console.error(`Fatal error trying consume message from queue ${queue_name}!`)
+        console.error(err)
       }
     })
   })
