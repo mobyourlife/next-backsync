@@ -27,6 +27,7 @@ export function facebookCheckAlbums(db) {
               property: 'log.check_albums'
             },
             fields: [
+              'id',
               'location',
               'message',
               'name',
