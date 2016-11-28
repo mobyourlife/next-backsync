@@ -1,4 +1,5 @@
 export * from './facebook_check_albums'
+export * from './facebook_check_feed'
 export * from './facebook_check_pages'
 export * from './facebook_check_photos'
 export * from './loop'
