@@ -51,7 +51,7 @@ function parseObject(db, req, i) {
 
 function updatePage(db, i) {
   return db.collection('pages').update({
-    fb_account_id: i._id
+    fb_account_id: i.id
   }, {
     $set: {
       about: i.about,
