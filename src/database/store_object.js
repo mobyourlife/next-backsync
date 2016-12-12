@@ -18,6 +18,7 @@ function store(db, data) {
   let promises = []
   promises.push(db.collection('batch_items').remove({ _id: new ObjectID(request._id) }))
   promises.push(parseObject(db, request, response))
+  promises.push(updateLastModified(db, request.fb_account_id))
 
   return Promise.all(promises)
 }
@@ -159,5 +160,13 @@ function upsertFeed(db, fb_account_id, i) {
     updated_time: i.updated_time
   }, {
     upsert: true
+  })
+}
+
+function updateLastModified(db, fb_account_id) {
+  return db.collection('pages').update({
+    fb_account_id
+  }, {
+    $set: {'log.last_modified': new Date()}
   })
 }
