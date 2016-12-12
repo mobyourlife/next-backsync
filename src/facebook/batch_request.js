@@ -3,29 +3,20 @@ import FormData from 'form-data'
 
 const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET
-const FACEBOOK_ACCESS_TOKEN = process.env.FACEBOOK_ACCESS_TOKEN
 
 export function batchRequest(batch_items) {
   return new Promise((resolve, reject) => {
     const data = batch_items.map(mapBatchItems)
 
-    let form = new FormData()
+    getAccessToken().then(token => {
+      let form = new FormData()
+      form.append('access_token', token)
+      form.append('batch', JSON.stringify(data))
 
-    if (FACEBOOK_ACCESS_TOKEN) {
-      form.append('access_token', FACEBOOK_ACCESS_TOKEN)
-    } else if (FACEBOOK_APP_ID && FACEBOOK_APP_SECRET) {
-      form.append('key', FACEBOOK_APP_ID)
-      form.append('access_token', FACEBOOK_APP_SECRET)
-    } else {
-      reject('Access token not specified!')
-      return
-    }
-    
-    form.append('batch', JSON.stringify(data))
-
-    fetch('https://graph.facebook.com/v2.8?locale=pt_BR', {
-      method: 'POST',
-      body: form
+      return fetch('https://graph.facebook.com/v2.8?locale=pt_BR', {
+        method: 'POST',
+        body: form
+      })
     })
     .then(res => res.json())
     .then(json => {
@@ -45,6 +36,32 @@ export function batchRequest(batch_items) {
       reject(err)
     })
   })
+}
+
+function getAccessToken() {
+  const args = objectToQueryString({
+    client_id: FACEBOOK_APP_ID,
+    client_secret: FACEBOOK_APP_SECRET,
+    grant_type: 'client_credentials'
+  })
+
+  return fetch(`https://graph.facebook.com/v2.8/oauth/access_token?${args}`)
+    .then(res => res.json())
+    .then(json => json.access_token)
+}
+
+function objectToQueryString(obj) {
+  let ret = ''
+
+  Object.keys(obj).forEach(i => {
+    if (ret.length > 0) {
+      ret += '&'
+    }
+
+    ret += i + '=' + obj[i]
+  })
+
+  return ret
 }
 
 function mapBatchItems(i) {
