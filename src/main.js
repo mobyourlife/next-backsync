@@ -3,6 +3,9 @@ import { connectToFacebookDatabase, storeError, storeObject, STORE_OBJECT_QUEUE 
 import { batchRequest } from './facebook'
 import { connectToMessageQueue, consumeQueue, produceQueue } from './mq'
 
+header()
+main()
+
 function main() {
   const BATCH_LOTS_QUEUE = 'batch_lots'
   const BATCH_ERRORS_QUEUE = 'batch_errors'
@@ -51,6 +54,3 @@ function header() {
   console.log(new Date().toISOString() + ' - Back Sync running...')
   console.log('')
 }
-
-header()
-main()
