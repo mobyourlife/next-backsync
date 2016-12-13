@@ -14,12 +14,12 @@
   "author": "Filipe Oliveira <contato@fmoliveira.com.br>",
   "license": "Apache-2.0",
   "dependencies": {
-    "amqplib": "^0.4.2",
+    "amqplib": "^0.5.1",
     "babel-core": "^6.20.0",
     "form-data": "^2.1.1",
     "mongodb": "^2.2.11",
     "node-fetch": "^1.6.3",
-    "rxjs": "^5.0.0-rc.2"
+    "rxjs": "^5.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
