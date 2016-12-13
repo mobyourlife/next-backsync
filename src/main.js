@@ -1,4 +1,4 @@
-import { facebookCheckPages, facebookCheckAlbums, facebookCheckFeed, facebookCheckPhotos, loop, prepareBatchItems, prepareBatchLots } from './backsync'
+import { builderCheckModifications, facebookCheckPages, facebookCheckAlbums, facebookCheckFeed, facebookCheckPhotos, loop, prepareBatchItems, prepareBatchLots } from './backsync'
 import { connectToFacebookDatabase, storeError, storeObject, STORE_OBJECT_QUEUE } from './database'
 import { batchRequest } from './facebook'
 import { connectToMessageQueue, consumeQueue, produceQueue } from './mq'
@@ -6,19 +6,21 @@ import { connectToMessageQueue, consumeQueue, produceQueue } from './mq'
 function main() {
   const BATCH_LOTS_QUEUE = 'batch_lots'
   const BATCH_ERRORS_QUEUE = 'batch_errors'
+  const BUILD_SITES_QUEUE = 'build_sites'
 
   Promise.all([
     connectToFacebookDatabase(),
     connectToMessageQueue()
   ]).then(data => {
     let [db, ch] = data
-    
+
     loop(() => facebookCheckPages(db).then(pages => prepareBatchItems(db, pages)), 5)
     loop(() => facebookCheckAlbums(db).then(albums => prepareBatchItems(db, albums)), 5)
     loop(() => facebookCheckPhotos(db).then(photos => prepareBatchItems(db, photos)), 5)
     loop(() => facebookCheckFeed(db).then(feed => prepareBatchItems(db, feed)), 5)
 
     loop(() => prepareBatchLots(db).then(lot => produceQueue(ch, BATCH_LOTS_QUEUE, lot)), 5)
+    loop(() => builderCheckModifications(db).then(list => list.map(id => produceQueue(ch, BUILD_SITES_QUEUE, id))), 5)
 
     consumeQueue(ch, BATCH_LOTS_QUEUE).subscribe(res => {
       const { data, ack } = res

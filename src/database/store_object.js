@@ -32,16 +32,16 @@ function parseObject(db, req, i) {
     switch (req.fb_request_type) {
       case 'page':
         return updatePage(db, i.body)
-      
+
       case 'album':
         return insertAlbums(db, req, i.body)
-      
+
       case 'photo':
         return insertPhotos(db, req, i.body)
-      
+
       case 'feed':
         return insertFeed(db, req, i.body)
-      
+
       default:
         return db.collection(STORE_OBJECT_QUEUE).insert(i)
     }
@@ -167,6 +167,7 @@ function updateLastModified(db, fb_account_id) {
   return db.collection('pages').update({
     fb_account_id
   }, {
-    $set: {'log.last_modified': new Date()}
+    $set: {'log.last_modified': new Date()},
+    $unset: {'log.last_built': null}
   })
 }
