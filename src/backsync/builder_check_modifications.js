@@ -18,7 +18,6 @@ export function builderCheckModifications(db) {
         } else {
           if (docs.length > 0) {
             const ids = docs.map(i => i._id)
-            resolve(ids)
             pages.updateMany(
               { _id: { $in: ids } },
               { $set: { log: { build_queued: new Date() } } },
