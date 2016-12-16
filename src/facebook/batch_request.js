@@ -48,6 +48,13 @@ function getAccessToken() {
   return fetch(`https://graph.facebook.com/v2.8/oauth/access_token?${args}`)
     .then(res => res.json())
     .then(json => json.access_token)
+    .then(token => {
+      if (token) {
+        return token
+      } else {
+        throw new Error('Unable to get access token from Facebook API!')
+      }
+    })
 }
 
 function objectToQueryString(obj) {
