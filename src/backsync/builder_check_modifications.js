@@ -7,7 +7,7 @@ export function builderCheckModifications(db) {
       pages.find({
         active: true,
         'log.last_modified': {$ne: null},
-        'log.last_built': null,
+        'log.build_updated': {$ne: true},
         $or: [
           { 'log.build_queued': null },
           { 'log.build_queued': {$lt: new Date(new Date().getTime() - 5 * 60 * 1000)} }
@@ -20,7 +20,7 @@ export function builderCheckModifications(db) {
             const ids = docs.map(i => i._id)
             pages.updateMany(
               { _id: { $in: ids } },
-              { $set: { log: { build_queued: new Date() } } },
+              { $set: { 'log.build_queued': new Date() } },
               { multi: true },
               (err, result) => {
                 if (err) {

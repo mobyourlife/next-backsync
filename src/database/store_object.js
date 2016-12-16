@@ -167,7 +167,9 @@ function updateLastModified(db, fb_account_id) {
   return db.collection('pages').update({
     fb_account_id
   }, {
-    $set: {'log.last_modified': new Date()},
-    $unset: {'log.last_built': null}
+    $set: {
+      'log.last_modified': new Date(),
+      'log.build_updated': false
+    }
   })
 }

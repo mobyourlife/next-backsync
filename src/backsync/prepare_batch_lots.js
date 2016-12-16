@@ -15,7 +15,7 @@ export function prepareBatchLots(db) {
             const ids = docs.map(i => i._id)
             batch_items.updateMany(
               { _id: { $in: ids } },
-              { $set: { log: { queued: new Date() } } },
+              { $set: { 'log.queued': new Date() } },
               { multi: true },
               (err, result) => {
                 if (err) {
