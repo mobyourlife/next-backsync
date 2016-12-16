@@ -17,4 +17,4 @@ docker run \
   -d \
   mobyourlife-backsync
 
-docker logs mobyourlife-backsync -f
+docker logs -f mobyourlife-backsync
