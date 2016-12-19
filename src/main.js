@@ -3,6 +3,9 @@ import { connectToFacebookDatabase, storeError, storeObject, STORE_OBJECT_QUEUE 
 import { batchRequest } from './facebook'
 import { connectToMessageQueue, consumeQueue, produceQueue } from './mq'
 
+const Lynx = require('lynx')
+const metrics = new Lynx('mob-db-telegraf', 8125)
+
 header()
 main()
 
@@ -27,6 +30,7 @@ function main() {
 
     consumeQueue(ch, BATCH_LOTS_QUEUE).subscribe(res => {
       const { data, ack } = res
+      metrics.increment('backsync.lots_queue_consumed')
       console.log('Consumed', data.length, 'items from the observable')
       batchRequest(data).then(res => {
         const promises = res.map(i => produceQueue(ch, STORE_OBJECT_QUEUE, i))
