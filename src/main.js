@@ -4,7 +4,7 @@ import { batchRequest } from './facebook'
 import { connectToMessageQueue, consumeQueue, produceQueue } from './mq'
 
 const Lynx = require('lynx')
-const metrics = new Lynx('mob-db-telegraf', 8125)
+const metrics = new Lynx(process.env.MOB_TELEGRAF_HOSTNAME, 8125)
 
 header()
 main()
