@@ -30,24 +30,37 @@ function main() {
 
     consumeQueue(ch, BATCH_LOTS_QUEUE).subscribe(res => {
       const { data, ack } = res
-      metrics.increment('backsync.lots_queue_consumed')
+      metrics.increment('queue.batch_lots.consume.ok')
       console.log('Consumed', data.length, 'items from the observable')
       batchRequest(data).then(res => {
+        metrics.increment('facebook.batch_request.ok')
         const promises = res.map(i => produceQueue(ch, STORE_OBJECT_QUEUE, i))
-        return Promise.all(promises).then(ack)
+        return Promise.all(promises).then(ack => {
+          metrics.increment('queue.store_object.produce.ok')
+          ack()
+        }, err => {
+          metrics.increment('queue.store_object.produce.err')
+        })
       }, err => {
         console.error(err)
+        metrics.increment('facebook.batch_request.err')
         return produceQueue(ch, BATCH_ERRORS_QUEUE, err).then(ack)
       })
     }, err => {
       console.error(err)
+      metrics.increment('queue.batch_lots.consume.err')
       produceQueue(ch, BATCH_ERRORS_QUEUE, err)
     })
 
     consumeQueue(ch, STORE_OBJECT_QUEUE).subscribe(res => {
       const { data, ack } = res
       console.log('Received response')
-      return storeObject(db, data).then(ack)
+      return storeObject(db, data).then(ack => {
+        metrics.increment('queue.store_object.consume.ok')
+        ack()
+      }, err => {
+        metrics.increment('queue.store_object.consume.err')
+      })
     })
   })
 }
