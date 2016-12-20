@@ -34,13 +34,15 @@ function main() {
       console.log('Consumed', data.length, 'items from the observable')
       batchRequest(data).then(res => {
         metrics.increment('facebook.batch_request.ok')
-        const promises = res.map(i => produceQueue(ch, STORE_OBJECT_QUEUE, i))
-        return Promise.all(promises).then(ack => {
-          metrics.increment('queue.store_object.produce.ok')
-          ack()
-        }, err => {
-          metrics.increment('queue.store_object.produce.err')
+        const promises = res.map(i => {
+          return produceQueue(ch, STORE_OBJECT_QUEUE, i).then(res => {
+            metrics.increment('queue.store_object.produce.ok')
+            return res
+          }, err => {
+            metrics.increment('queue.store_object.produce.err')
+          })
         })
+        return Promise.all(promises).then(ack)
       }, err => {
         console.error(err)
         metrics.increment('facebook.batch_request.err')
