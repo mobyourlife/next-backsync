@@ -57,7 +57,7 @@ function main() {
     consumeQueue(ch, STORE_OBJECT_QUEUE).subscribe(res => {
       const { data, ack } = res
       console.log('Received response')
-      return storeObject(db, data).then(ack => {
+      return storeObject(db, data).then(res => {
         metrics.increment('queue.store_object.consume.ok')
         ack()
       }, err => {
