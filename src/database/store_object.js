@@ -54,7 +54,7 @@ function updatePage(db, i) {
   let picture = null
 
   if (i.picture && !i.picture.data.is_silhouette) {
-    user.picture = i.picture.data.url
+    picture = i.picture.data.url
   }
 
   return db.collection('pages').update({
