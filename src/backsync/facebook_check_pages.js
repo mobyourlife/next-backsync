@@ -43,6 +43,7 @@ export function facebookCheckPages(db) {
               'name',
               'overall_star_rating',
               'phone',
+              'picture',
               'rating_count',
               'talking_about_count',
               'username',

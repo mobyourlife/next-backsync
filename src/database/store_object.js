@@ -51,6 +51,12 @@ function parseObject(db, req, i) {
 }
 
 function updatePage(db, i) {
+  let picture = null
+
+  if (i.picture && !i.picture.data.is_silhouette) {
+    user.picture = i.picture.data.url
+  }
+
   return db.collection('pages').update({
     fb_account_id: i.id
   }, {
@@ -70,6 +76,7 @@ function updatePage(db, i) {
       name: i.name,
       overall_star_rating: i.overall_star_rating,
       phone: i.phone,
+      picture: picture,
       rating_count: i.rating_count,
       talking_about_count: i.talking_about_count,
       verification_status: i.verification_status,
