@@ -4,7 +4,7 @@
   "description": "Microservices de sincronização com os provedores de dados.",
   "main": "src/main.js",
   "scripts": {
-    "start": "node bootstrap.js",
+    "start": "node backsync.js",
     "watch": "babel-watch src/main.js"
   },
   "repository": {
